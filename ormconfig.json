@@ -1,0 +1,10 @@
+{
+    "type": "mysql",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "username": "root",
+    "password": "XU3wBZDK8Ec7v9eLu6WcmA34mU",
+    "database": "siteSendMessage",
+    "synchronize": true,
+    "entities": ["./src/models/*.ts"]
+}

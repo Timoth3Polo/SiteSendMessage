@@ -1,0 +1,40 @@
+{
+  "name": "SiteSendMessage",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Timoth3Polo/SiteSendMessage.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Timoth3Polo/SiteSendMessage/issues"
+  },
+  "homepage": "https://github.com/Timoth3Polo/SiteSendMessage#readme",
+  "devDependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/cors": "^2.8.9",
+    "@types/express": "^4.17.11",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/mysql": "^2.15.17",
+    "@types/node": "^14.14.22",
+    "nodemon": "^2.0.7",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1",
+    "typeorm": "^0.2.30"
+  }
+}
