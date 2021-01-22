@@ -2,6 +2,7 @@ import "reflect-metadata";
 import Express, { Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import helmet from "helmet"
 import { createConnection } from "typeorm";
 import { UserController } from "./controllers/UserController";
 import { MessageController } from "./controllers/MessageController";
@@ -10,6 +11,7 @@ const app = Express(); // instance express
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(helmet());
 
 // instancier nos controllers
 const userController = new UserController();
@@ -19,6 +21,8 @@ app.post("/api/users", authCheckMiddleware, userController.create);
 app.get("/api/users", authCheckMiddleware, userController.getUsers);
 app.get("/api/users/me", authCheckMiddleware, userController.me);
 app.get("/api/users/:id", authCheckMiddleware, userController.getUsersById);
+app.delete("/api/users/:id", authCheckMiddleware, userController.deleteUser);
+app.patch("/api/users", authCheckMiddleware, userController.patchUser);
 app.post("/api/users/login", userController.login);
 
 app.post("/api/message", async (req: Request, res: Response) => {

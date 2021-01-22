@@ -1,14 +1,22 @@
 import { validate } from "class-validator";
-import { NextFunction, Request, Response } from "express";
+import e, { NextFunction, Request, Response } from "express";
 import { User } from "../models/User";
 import { hash, compare } from "bcrypt";
 import "dotenv/config";
 import { sign } from "jsonwebtoken";
+import { getRepository } from "typeorm";
+import { Enterprise } from '../models/Enterprise';
 export class UserController {
   async create(req: Request, res: Response, next: NextFunction) {
     const body: User = req.body;
-    const newUser = User.create(body);
+    const enterprise1 = await Enterprise.create({name:`enterprise1`}).save();
+    const enterprise2 = await Enterprise.create({name:`enterprise2`}).save();
+    const newUser = User.create({
+      ...body,
+      enterprise: [ enterprise1, enterprise2]
+    });
     const errors = await validate(newUser);
+
     if (errors.length > 0) {
       res.status(400).send({ messages: errors });
     } else {
@@ -19,14 +27,14 @@ export class UserController {
   }
   async getUsers(req: Request, res: Response, next: NextFunction) {
     const users = await User.find({
-      relations: ["sendMessages", "receiveMessage"],
+      relations: ["sendMessages", "receiveMessage", "enterprise"],
     });
     res.json(users);
   }
 
   async getUsersById(req: Request, res: Response, next: NextFunction) {
     const user = await User.findOne(req.params.id, {
-      relations: ["sendMessages", "receiveMessage"],
+      relations: ["sendMessages", "receiveMessage", "enterprise"],
     });
     if (!user) {
       res.sendStatus(404);
@@ -71,10 +79,39 @@ export class UserController {
       relations: ["sendMessages", "receiveMessage"],
     });
 
-    if(!me) {
+    if (!me) {
       return res.status(404).send({ message: "Utilisateur introuvable" });
     }
 
-    return res.json(me)
+    return res.json(me);
+  }
+
+  async patchUser(req: Request, res: Response, next: NextFunction) {
+    const userId = (req as any).userId;
+    const body: User = req.body;
+    if (!userId) {
+      return res.status(404).send({ message: "Userid introuvable" });
+    }
+    const me = await User.findOne(userId);
+    if (!me) {
+      return res.status(404).send({ message: "Utilisateur introuvable" });
+    }
+    const userRepository = getRepository(User);
+    await userRepository.update(me?.id, body)
+      .catch(() => res.sendStatus(500))
+      
+    return res.json(await userRepository.findOne(me.id));
+  }
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    const userIdToDelete = req.params.id;
+
+    const userToDelete = await User.findOne(userIdToDelete);
+
+    if(!userToDelete) {
+      return res.status(404).send({ message: "Userid introuvable" });
+    }
+    const userRepository = getRepository(User);
+    userRepository.delete(userToDelete.id)
+    return res.json({message: `L'utilisateur avec l'id ${userIdToDelete} est delete`})
   }
 }

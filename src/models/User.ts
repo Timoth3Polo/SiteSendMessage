@@ -1,12 +1,15 @@
-import { Exclude } from "class-transformer";
 import { IsDefined, Length } from "class-validator";
 import {
   BaseEntity,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Enterprise } from "./Enterprise";
+
 import { Message } from "./Message";
 
 @Entity()
@@ -42,4 +45,8 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Message, (message) => message.destinataire)
   receiveMessage: [Message];
+
+  @ManyToMany(() => Enterprise )
+  @JoinTable()
+  enterprise: [Enterprise]
 }
